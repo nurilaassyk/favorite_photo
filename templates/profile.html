@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block menu %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3 class="main-txt p-3 d-flex justify-content-center"> Hello {{ author.username }} </h3>
+        <h3 class="main-txt d-flex justify-content-center"> Favorite photo </h3>
+        <div class="row row-cols-1 row-cols-md-3 ">
+            {% for favorite in author.favorite_photo.all %}
+                <div class="col p-3">
+                    <div class="card" style="width: 20rem;">
+                        <img src=" {{ favorite.photo.photo.url }} " alt="Картинка" class="card-img-top">
+                        <div class="card-body">
+                            <button class="btn btn-outline-primary" id="{{ favorite.photo.id }}">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+
+    <script type="application/javascript">
+        $('button').on('click', function (event) {
+            let id = $(this).attr('id')
+            console.log(id)
+            $.ajax({
+                url: `http://localhost:8000/api/photo/${id}/to-favorite/`,
+                method: 'POST',
+                data: {'user_id': {{ user.id }}},
+                success: function (data, status) {
+                    console.log(data.detail)
+                },
+                error: function (response, status) {
+                    console.log(status);
+                }
+            });
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block menu %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="book-title d-flex justify-content-center p-3"> Are you sure you want to delete? </h1>
+        <div class="col p-3">
+            <div class="card" style="width: 20rem;">
+                <img src=" {{ photo.photo.url }}" alt="Картинка" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title"> {{ photo.text }}</h5>
+                    <p class="card-text"> {{ photo.author }} </p>
+                    <p class="card-text"> {{ photo.created_at }} </p>
+
+                     <form action="{% url 'delete' photo.pk %}" method="POST">
+                        {% csrf_token %}
+                        <div class="book-button d-flex justify-content-start ">
+                            <input class="task-btn btn btn-outline-danger" type="submit" value="Delete">
+                            <a class="task-btn btn btn-outline-primary" href=" {% url 'index' %}">
+                                Cancel </a>
+                        </div>
+                    </form>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

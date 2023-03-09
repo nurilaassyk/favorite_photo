@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+{% load static %}
+
+
+{% block menu %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3 class="main-txt p-3 d-flex justify-content-center">Photo</h3>
+        <div class="row row-cols-1 row-cols-md-3 ">
+            {% for p in photo %}
+                <div class="col p-3">
+                    <div class="card" style="width: 20rem;">
+                        <img src=" {{ p.photo.url }}" alt="Картинка" class="card-img-top">
+                        <div class="card-body">
+                            <a href="{% url 'detail' p.pk %}">
+                                <h5 class="card-title">{{ p.text }}</h5>
+                            </a>
+                            <p class="card-text"> {{ p.author }} </p>
+                            <p class="card-text"> {{ p.created_at }} </p>
+                            {% if user.is_authenticated %}
+                                        <div class="btnbox" id="btnbox{{ p.id }}">
+                                            <button class="btn btn-outline-primary" id="{{ p.id }}">
+                                                 Submit
+                                            </button>
+                                        </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+
+    <script type="application/javascript">
+        $('button').on('click', function (event) {
+            let id = $(this).attr('id')
+            console.log(id)
+            $.ajax({
+                url: `http://localhost:8000/api/photo/${id}/to-favorite/`,
+                method: 'POST',
+                data: {'user_id': {{ user.id }}},
+                success: function (data, status) {
+                    console.log(data.detail)
+                },
+                error: function (response, status) {
+                    console.log(status);
+                }
+            });
+        })
+    </script>
+
+
+{% endblock %}

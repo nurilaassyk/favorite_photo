@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block menu %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="col p-3">
+            <div class="card" style="width: 20rem;">
+                <img src=" {{ photo.photo.url }}" alt="Картинка" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title"> {{ photo.text }}</h5>
+                    <p class="card-text"> Author {{ photo.author }} </p>
+                    <p class="card-text"> {{ photo.created_at }} </p>
+                    {% if user.is_authenticated %}
+                        <button class="btn btn-outline-primary" id="{{ photo.id }}">
+                            Submit
+                        </button>
+                    {% endif %}
+                    {% if perm.change_photo or photo.author == request.user %}
+                        <a href="{% url 'edit'  photo.pk %}" class="task-btn btn btn-outline-primary"> Edit </a>
+                    {% endif %}
+                    {% if perm.delete_photo or photo.author == request.user %}
+                        <a href="{% url 'delete' photo.pk %}" class="task-btn btn btn-outline-primary">Delete</a>
+                    {% endif %}
+                 <p class="card-text"> in favorite </p>
+                    {% for user in photo.favorite_users.all %}
+                        <a href="{% url 'profile' user.user.pk %}"><p> {{ user.user.username }} </p></a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+            integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+
+    <script type="application/javascript">
+        $('button').on('click', function (event) {
+            let id = $(this).attr('id')
+            console.log(id)
+            $.ajax({
+                url: `http://localhost:8000/api/photo/${id}/to-favorite/`,
+                method: 'POST',
+                data: {'user_id': {{ user.id }}},
+                success: function (data, status) {
+                    console.log(data.detail)
+                },
+                error: function (response, status) {
+                    console.log(status);
+                }
+            });
+        })
+    </script>
+{% endblock %}
